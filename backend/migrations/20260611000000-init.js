@@ -1,5 +1,6 @@
-exports.up = function(db, callback) {
-  db.runSql(`
+exports.up = function (db, callback) {
+  db.runSql(
+    `
     CREATE TABLE IF NOT EXISTS users (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       name VARCHAR(255) NOT NULL,
@@ -51,15 +52,20 @@ exports.up = function(db, callback) {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
-  `, callback);
+  `,
+    callback,
+  );
 };
 
-exports.down = function(db, callback) {
-  db.runSql(`
+exports.down = function (db, callback) {
+  db.runSql(
+    `
     DROP TABLE IF EXISTS notification_history CASCADE;
     DROP TABLE IF EXISTS notification_templates CASCADE;
     DROP TABLE IF EXISTS refresh_tokens CASCADE;
     DROP TABLE IF EXISTS pending_registrations CASCADE;
     DROP TABLE IF EXISTS users CASCADE;
-  `, callback);
+  `,
+    callback,
+  );
 };

@@ -1,5 +1,5 @@
-const { Pool } = require('pg');
-const logger = require('../utils/logger');
+const { Pool } = require("pg");
+const logger = require("../utils/logger");
 
 const pool = new Pool({
   host: process.env.DB_HOST,
@@ -12,12 +12,12 @@ const pool = new Pool({
   connectionTimeoutMillis: 2000,
 });
 
-pool.on('connect', () => {
-  logger.info('Connected to PostgreSQL');
+pool.on("connect", () => {
+  logger.info("Connected to PostgreSQL");
 });
 
-pool.on('error', (err) => {
-  logger.error('Unexpected error on idle client', err);
+pool.on("error", (err) => {
+  logger.error("Unexpected error on idle client", err);
   process.exit(-1);
 });
 

@@ -1,10 +1,10 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const rateLimit = require('express-rate-limit');
-const { z } = require('zod');
-const notificationController = require('../controllers/notificationController');
-const { authMiddleware, authorize } = require('../middleware/auth');
-const { validate } = require('../middleware/validate');
+const rateLimit = require("express-rate-limit");
+const { z } = require("zod");
+const notificationController = require("../controllers/notificationController");
+const { authMiddleware, authorize } = require("../middleware/auth");
+const { validate } = require("../middleware/validate");
 
 /**
  * @swagger
@@ -14,7 +14,7 @@ const { validate } = require('../middleware/validate');
  */
 
 const triggerSchema = z.object({
-  type: z.enum(['email', 'sms']),
+  type: z.enum(["email", "sms"]),
   recipient: z.string().min(1),
   templateName: z.string().min(1),
   payload: z.record(z.any()).optional(),
@@ -23,7 +23,10 @@ const triggerSchema = z.object({
 const triggerLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
-  message: { success: false, message: 'Too many notification requests. Try again later.' },
+  message: {
+    success: false,
+    message: "Too many notification requests. Try again later.",
+  },
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -73,7 +76,14 @@ const triggerLimiter = rateLimit({
  *       500:
  *         description: Internal server error
  */
-router.post('/send', authMiddleware, authorize('admin'), triggerLimiter, validate(triggerSchema), notificationController.triggerNotification);
+router.post(
+  "/send",
+  authMiddleware,
+  authorize("admin"),
+  triggerLimiter,
+  validate(triggerSchema),
+  notificationController.triggerNotification,
+);
 
 /**
  * @swagger
@@ -124,7 +134,12 @@ router.post('/send', authMiddleware, authorize('admin'), triggerLimiter, validat
  *       500:
  *         description: Internal server error
  */
-router.post('/templates', authMiddleware, authorize('admin'), notificationController.createTemplate);
+router.post(
+  "/templates",
+  authMiddleware,
+  authorize("admin"),
+  notificationController.createTemplate,
+);
 
 /**
  * @swagger
@@ -172,7 +187,12 @@ router.post('/templates', authMiddleware, authorize('admin'), notificationContro
  *       500:
  *         description: Internal server error
  */
-router.get('/history', authMiddleware, authorize('admin'), notificationController.getHistory);
+router.get(
+  "/history",
+  authMiddleware,
+  authorize("admin"),
+  notificationController.getHistory,
+);
 
 /**
  * @swagger
@@ -203,7 +223,12 @@ router.get('/history', authMiddleware, authorize('admin'), notificationControlle
  *       500:
  *         description: Internal server error
  */
-router.post('/history/:id/retry', authMiddleware, authorize('admin'), notificationController.retryFailed);
+router.post(
+  "/history/:id/retry",
+  authMiddleware,
+  authorize("admin"),
+  notificationController.retryFailed,
+);
 
 /**
  * @swagger
@@ -223,6 +248,11 @@ router.post('/history/:id/retry', authMiddleware, authorize('admin'), notificati
  *       500:
  *         description: Internal server error
  */
-router.get('/analytics', authMiddleware, authorize('admin'), notificationController.getAnalytics);
+router.get(
+  "/analytics",
+  authMiddleware,
+  authorize("admin"),
+  notificationController.getAnalytics,
+);
 
 module.exports = router;

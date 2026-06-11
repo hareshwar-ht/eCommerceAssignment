@@ -7,7 +7,7 @@ const create = async ({ name, email, password, phone, role }) => {
   const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
   const result = await pool.query(
     "INSERT INTO users (name, email, password_hash, phone, role) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, phone, role, created_at",
-    [name, email, passwordHash, phone || null, role || 'user'],
+    [name, email, passwordHash, phone || null, role || "user"],
   );
   return result.rows[0];
 };
@@ -65,7 +65,7 @@ const updatePassword = async (userId, newPassword) => {
 const updateProfile = async (userId, { name, email, phone }) => {
   const result = await pool.query(
     "UPDATE users SET name = $1, email = $2, phone = $3, updated_at = CURRENT_TIMESTAMP WHERE id = $4 RETURNING id, name, email, phone, role",
-    [name, email, phone, userId]
+    [name, email, phone, userId],
   );
   return result.rows[0];
 };

@@ -1,17 +1,21 @@
-const userModel = require('../models/userModel');
-const refreshTokenModel = require('../models/refreshTokenModel');
-const authService = require('../services/authService');
-const crypto = require('crypto');
-const { generateAccessToken, generateRefreshToken } = require('../utils/jwt');
-const logger = require('../utils/logger');
+const userModel = require("../models/userModel");
+const refreshTokenModel = require("../models/refreshTokenModel");
+const authService = require("../services/authService");
+const crypto = require("crypto");
+const { generateAccessToken, generateRefreshToken } = require("../utils/jwt");
+const logger = require("../utils/logger");
 
 const normalizePhone = (phone) => {
   if (!phone) return phone;
-  let cleaned = phone.replace(/[\s()-]/g, '');
-  if (!cleaned.startsWith('+')) {
+  let cleaned = phone.replace(/[\s()-]/g, "");
+  if (!cleaned.startsWith("+")) {
     if (cleaned.length === 10 && /^\d+$/.test(cleaned)) {
       cleaned = `+91${cleaned}`;
-    } else if (cleaned.startsWith('91') && cleaned.length === 12 && /^\d+$/.test(cleaned)) {
+    } else if (
+      cleaned.startsWith("91") &&
+      cleaned.length === 12 &&
+      /^\d+$/.test(cleaned)
+    ) {
       cleaned = `+${cleaned}`;
     } else {
       cleaned = `+${cleaned}`;
@@ -28,14 +32,14 @@ const register = async (req, res) => {
     if (!name || !email || !password || !phone) {
       return res.status(400).json({
         success: false,
-        message: 'Name, email, password, and phone number are required.',
+        message: "Name, email, password, and phone number are required.",
       });
     }
 
     if (password.length < 6) {
       return res.status(400).json({
         success: false,
-        message: 'Password must be at least 6 characters.',
+        message: "Password must be at least 6 characters.",
       });
     }
 
@@ -43,22 +47,23 @@ const register = async (req, res) => {
     if (!emailRegex.test(email)) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid email format.',
+        message: "Invalid email format.",
       });
     }
 
-    const { user, accessToken, refreshToken } = await authService.registerDirectly({ name, email, password, phone });
+    const { user, accessToken, refreshToken } =
+      await authService.registerDirectly({ name, email, password, phone });
 
-    res.cookie('refreshToken', refreshToken, {
+    res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      sameSite: 'strict',
+      sameSite: "strict",
       maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRES_MS),
-      path: '/api/user/refresh',
+      path: "/api/user/refresh",
     });
 
     res.status(201).json({
       success: true,
-      message: 'User registered successfully.',
+      message: "User registered successfully.",
       data: {
         user: {
           id: user.id,
@@ -69,13 +74,13 @@ const register = async (req, res) => {
       },
     });
   } catch (err) {
-    if (err.message === 'User with this email already exists.') {
+    if (err.message === "User with this email already exists.") {
       return res.status(409).json({ success: false, message: err.message });
     }
-    logger.error('Register error: ' + err);
+    logger.error("Register error: " + err);
     res.status(500).json({
       success: false,
-      message: 'Internal server error.',
+      message: "Internal server error.",
     });
   }
 };
@@ -88,14 +93,14 @@ const registerInitiate = async (req, res) => {
     if (!name || !email || !password || !phone) {
       return res.status(400).json({
         success: false,
-        message: 'Name, email, password, and phone number are required.',
+        message: "Name, email, password, and phone number are required.",
       });
     }
 
     if (password.length < 6) {
       return res.status(400).json({
         success: false,
-        message: 'Password must be at least 6 characters.',
+        message: "Password must be at least 6 characters.",
       });
     }
 
@@ -103,7 +108,7 @@ const registerInitiate = async (req, res) => {
     if (!emailRegex.test(email)) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid email format.',
+        message: "Invalid email format.",
       });
     }
 
@@ -111,16 +116,16 @@ const registerInitiate = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'OTP sent to mobile number. Please verify.',
+      message: "OTP sent to mobile number. Please verify.",
     });
   } catch (err) {
-    if (err.message === 'User with this email already exists.') {
+    if (err.message === "User with this email already exists.") {
       return res.status(409).json({ success: false, message: err.message });
     }
-    logger.error('Register initiate error: ' + err);
+    logger.error("Register initiate error: " + err);
     res.status(500).json({
       success: false,
-      message: 'Internal server error.',
+      message: "Internal server error.",
     });
   }
 };
@@ -133,22 +138,23 @@ const registerVerify = async (req, res) => {
     if (!phone || !otp) {
       return res.status(400).json({
         success: false,
-        message: 'Phone number and OTP are required.',
+        message: "Phone number and OTP are required.",
       });
     }
 
-    const { user, accessToken, refreshToken } = await authService.verifyRegistration({ phone, otp });
+    const { user, accessToken, refreshToken } =
+      await authService.verifyRegistration({ phone, otp });
 
-    res.cookie('refreshToken', refreshToken, {
+    res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      sameSite: 'strict',
+      sameSite: "strict",
       maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRES_MS),
-      path: '/api/user/refresh',
+      path: "/api/user/refresh",
     });
 
     res.status(201).json({
       success: true,
-      message: 'User registered successfully.',
+      message: "User registered successfully.",
       data: {
         user: {
           id: user.id,
@@ -159,16 +165,20 @@ const registerVerify = async (req, res) => {
       },
     });
   } catch (err) {
-    if (err.message === 'No active OTP verification session found for this phone number.' || err.message === 'Invalid OTP.') {
+    if (
+      err.message ===
+        "No active OTP verification session found for this phone number." ||
+      err.message === "Invalid OTP."
+    ) {
       return res.status(400).json({ success: false, message: err.message });
     }
-    if (err.message === 'User with this email already exists.') {
+    if (err.message === "User with this email already exists.") {
       return res.status(409).json({ success: false, message: err.message });
     }
-    logger.error('Register verify error: ' + err);
+    logger.error("Register verify error: " + err);
     res.status(500).json({
       success: false,
-      message: 'Internal server error.',
+      message: "Internal server error.",
     });
   }
 };
@@ -180,22 +190,25 @@ const login = async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Email and password are required.',
+        message: "Email and password are required.",
       });
     }
 
-    const { user, accessToken, refreshToken } = await authService.login({ email, password });
+    const { user, accessToken, refreshToken } = await authService.login({
+      email,
+      password,
+    });
 
-    res.cookie('refreshToken', refreshToken, {
+    res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      sameSite: 'strict',
+      sameSite: "strict",
       maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRES_MS),
-      path: '/api/user/refresh',
+      path: "/api/user/refresh",
     });
 
     res.json({
       success: true,
-      message: 'Login successful.',
+      message: "Login successful.",
       data: {
         user: {
           id: user.id,
@@ -206,13 +219,13 @@ const login = async (req, res) => {
       },
     });
   } catch (err) {
-    if (err.message === 'Invalid email or password.') {
+    if (err.message === "Invalid email or password.") {
       return res.status(401).json({ success: false, message: err.message });
     }
-    logger.error('Login error: ' + err);
+    logger.error("Login error: " + err);
     res.status(500).json({
       success: false,
-      message: 'Internal server error.',
+      message: "Internal server error.",
     });
   }
 };
@@ -224,17 +237,17 @@ const refresh = async (req, res) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: 'Refresh token missing.',
+        message: "Refresh token missing.",
       });
     }
 
     let payload;
     try {
-      payload = require('../utils/jwt').verifyRefreshToken(token);
+      payload = require("../utils/jwt").verifyRefreshToken(token);
     } catch {
       return res.status(403).json({
         success: false,
-        message: 'Invalid refresh token.',
+        message: "Invalid refresh token.",
       });
     }
 
@@ -242,13 +255,16 @@ const refresh = async (req, res) => {
     if (!storedTokens.length) {
       return res.status(403).json({
         success: false,
-        message: 'Refresh token not found.',
+        message: "Refresh token not found.",
       });
     }
 
     let matchedToken = null;
     for (const stored of storedTokens) {
-      const valid = await refreshTokenModel.verifyToken(token, stored.token_hash);
+      const valid = await refreshTokenModel.verifyToken(
+        token,
+        stored.token_hash,
+      );
       if (valid) {
         matchedToken = stored;
         break;
@@ -259,7 +275,7 @@ const refresh = async (req, res) => {
       await refreshTokenModel.deleteByUserId(payload.sub);
       return res.status(403).json({
         success: false,
-        message: 'Invalid refresh token. All sessions revoked.',
+        message: "Invalid refresh token. All sessions revoked.",
       });
     }
 
@@ -269,7 +285,7 @@ const refresh = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'User not found.',
+        message: "User not found.",
       });
     }
 
@@ -278,11 +294,11 @@ const refresh = async (req, res) => {
 
     await refreshTokenModel.create(user.id, newRefreshToken);
 
-    res.cookie('refreshToken', newRefreshToken, {
+    res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
-      sameSite: 'strict',
+      sameSite: "strict",
       maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRES_MS),
-      path: '/api/user/refresh',
+      path: "/api/user/refresh",
     });
 
     res.json({
@@ -292,10 +308,10 @@ const refresh = async (req, res) => {
       },
     });
   } catch (err) {
-    logger.error('Refresh error: ' + err);
+    logger.error("Refresh error: " + err);
     res.status(500).json({
       success: false,
-      message: 'Internal server error.',
+      message: "Internal server error.",
     });
   }
 };
@@ -307,7 +323,7 @@ const forgotPassword = async (req, res) => {
     if (!email) {
       return res.status(400).json({
         success: false,
-        message: 'Email is required.',
+        message: "Email is required.",
       });
     }
 
@@ -315,11 +331,12 @@ const forgotPassword = async (req, res) => {
     if (!user) {
       return res.json({
         success: true,
-        message: 'If an account with that email exists, a reset link has been sent.',
+        message:
+          "If an account with that email exists, a reset link has been sent.",
       });
     }
 
-    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetToken = crypto.randomBytes(32).toString("hex");
     const expiresAt = new Date(Date.now() + 3600000);
 
     await userModel.saveResetToken(email, resetToken, expiresAt);
@@ -331,16 +348,17 @@ const forgotPassword = async (req, res) => {
 
     res.json({
       success: true,
-      message: 'If an account with that email exists, a reset link has been sent.',
+      message:
+        "If an account with that email exists, a reset link has been sent.",
       data: {
         resetUrl,
       },
     });
   } catch (err) {
-    logger.error('Forgot password error: ' + err);
+    logger.error("Forgot password error: " + err);
     res.status(500).json({
       success: false,
-      message: 'Internal server error.',
+      message: "Internal server error.",
     });
   }
 };
@@ -352,14 +370,14 @@ const resetPassword = async (req, res) => {
     if (!token || !newPassword) {
       return res.status(400).json({
         success: false,
-        message: 'Token and new password are required.',
+        message: "Token and new password are required.",
       });
     }
 
     if (newPassword.length < 6) {
       return res.status(400).json({
         success: false,
-        message: 'Password must be at least 6 characters.',
+        message: "Password must be at least 6 characters.",
       });
     }
 
@@ -367,28 +385,28 @@ const resetPassword = async (req, res) => {
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid or expired reset token.',
+        message: "Invalid or expired reset token.",
       });
     }
 
     await userModel.updatePassword(user.id, newPassword);
     await refreshTokenModel.deleteByUserId(user.id);
 
-    res.clearCookie('refreshToken', {
+    res.clearCookie("refreshToken", {
       httpOnly: true,
-      sameSite: 'strict',
-      path: '/api/user/refresh',
+      sameSite: "strict",
+      path: "/api/user/refresh",
     });
 
     res.json({
       success: true,
-      message: 'Password reset successful. Please login again.',
+      message: "Password reset successful. Please login again.",
     });
   } catch (err) {
-    logger.error('Reset password error: ' + err);
+    logger.error("Reset password error: " + err);
     res.status(500).json({
       success: false,
-      message: 'Internal server error.',
+      message: "Internal server error.",
     });
   }
 };
@@ -399,28 +417,28 @@ const logout = async (req, res) => {
 
     if (token) {
       try {
-        const payload = require('../utils/jwt').verifyRefreshToken(token);
+        const payload = require("../utils/jwt").verifyRefreshToken(token);
         await refreshTokenModel.deleteByUserId(payload.sub);
       } catch {
         await refreshTokenModel.deleteAllExpired();
       }
     }
 
-    res.clearCookie('refreshToken', {
+    res.clearCookie("refreshToken", {
       httpOnly: true,
-      sameSite: 'strict',
-      path: '/api/user/refresh',
+      sameSite: "strict",
+      path: "/api/user/refresh",
     });
 
     res.json({
       success: true,
-      message: 'Logged out successfully.',
+      message: "Logged out successfully.",
     });
   } catch (err) {
-    logger.error('Logout error: ' + err);
+    logger.error("Logout error: " + err);
     res.status(500).json({
       success: false,
-      message: 'Internal server error.',
+      message: "Internal server error.",
     });
   }
 };
@@ -431,7 +449,7 @@ const getProfile = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'User not found.',
+        message: "User not found.",
       });
     }
 
@@ -440,10 +458,10 @@ const getProfile = async (req, res) => {
       data: { user },
     });
   } catch (err) {
-    logger.error('Get profile error: ' + err);
+    logger.error("Get profile error: " + err);
     res.status(500).json({
       success: false,
-      message: 'Internal server error.',
+      message: "Internal server error.",
     });
   }
 };
@@ -454,28 +472,32 @@ const updateProfile = async (req, res) => {
     if (!name || !email) {
       return res.status(400).json({
         success: false,
-        message: 'Name and email are required.',
+        message: "Name and email are required.",
       });
     }
 
-    const updatedUser = await userModel.updateProfile(req.user.sub, { name, email, phone });
+    const updatedUser = await userModel.updateProfile(req.user.sub, {
+      name,
+      email,
+      phone,
+    });
     if (!updatedUser) {
       return res.status(404).json({
         success: false,
-        message: 'User not found.',
+        message: "User not found.",
       });
     }
 
     res.json({
       success: true,
-      message: 'Profile updated successfully.',
+      message: "Profile updated successfully.",
       data: { user: updatedUser },
     });
   } catch (err) {
-    logger.error('Update profile error: ' + err);
+    logger.error("Update profile error: " + err);
     res.status(500).json({
       success: false,
-      message: 'Internal server error.',
+      message: "Internal server error.",
     });
   }
 };
@@ -483,16 +505,16 @@ const updateProfile = async (req, res) => {
 const deleteProfile = async (req, res) => {
   try {
     await userModel.deleteProfile(req.user.sub);
-    res.clearCookie('refreshToken', { path: '/api/user/refresh' });
+    res.clearCookie("refreshToken", { path: "/api/user/refresh" });
     res.json({
       success: true,
-      message: 'Profile deleted successfully.',
+      message: "Profile deleted successfully.",
     });
   } catch (err) {
-    logger.error('Delete profile error: ' + err);
+    logger.error("Delete profile error: " + err);
     res.status(500).json({
       success: false,
-      message: 'Internal server error.',
+      message: "Internal server error.",
     });
   }
 };

@@ -1,5 +1,5 @@
-const notificationModel = require('../models/notificationModel');
-const logger = require('../utils/logger');
+const notificationModel = require("../models/notificationModel");
+const logger = require("../utils/logger");
 
 const createTemplate = async (req, res) => {
   try {
@@ -8,7 +8,7 @@ const createTemplate = async (req, res) => {
     if (!name || !type || !templateId) {
       return res.status(400).json({
         success: false,
-        message: 'Name, type, and templateId are required.',
+        message: "Name, type, and templateId are required.",
       });
     }
 
@@ -16,7 +16,7 @@ const createTemplate = async (req, res) => {
     if (existing) {
       return res.status(409).json({
         success: false,
-        message: 'Template with this name already exists.',
+        message: "Template with this name already exists.",
       });
     }
 
@@ -30,14 +30,14 @@ const createTemplate = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: 'Template created.',
+      message: "Template created.",
       data: { template },
     });
   } catch (err) {
-    logger.error('Create template error: ' + err);
+    logger.error("Create template error: " + err);
     res.status(500).json({
       success: false,
-      message: 'Internal server error.',
+      message: "Internal server error.",
     });
   }
 };
@@ -59,10 +59,10 @@ const getHistory = async (req, res) => {
       data: result,
     });
   } catch (err) {
-    logger.error('Get history error: ' + err);
+    logger.error("Get history error: " + err);
     res.status(500).json({
       success: false,
-      message: 'Internal server error.',
+      message: "Internal server error.",
     });
   }
 };
@@ -75,19 +75,19 @@ const retryFailed = async (req, res) => {
     if (!notification) {
       return res.status(404).json({
         success: false,
-        message: 'Notification not found.',
+        message: "Notification not found.",
       });
     }
 
-    if (notification.status !== 'failed') {
+    if (notification.status !== "failed") {
       return res.status(400).json({
         success: false,
-        message: 'Only failed notifications can be retried.',
+        message: "Only failed notifications can be retried.",
       });
     }
 
-    const rabbitmq = require('../config/rabbitmq');
-    const notificationService = require('../services/notificationService');
+    const rabbitmq = require("../config/rabbitmq");
+    const notificationService = require("../services/notificationService");
 
     const message = {
       historyId: notification.id,
@@ -98,24 +98,27 @@ const retryFailed = async (req, res) => {
       retryCount: notification.retry_count,
     };
 
-    const queue = notification.type === 'email' ? rabbitmq.QUEUES.EMAIL : rabbitmq.QUEUES.SMS;
+    const queue =
+      notification.type === "email"
+        ? rabbitmq.QUEUES.EMAIL
+        : rabbitmq.QUEUES.SMS;
     const published = await rabbitmq.publish(queue, message);
 
     if (published) {
-      await notificationModel.updateHistoryStatus(notification.id, 'retrying');
+      await notificationModel.updateHistoryStatus(notification.id, "retrying");
     } else {
       await notificationService.processDirect(message);
     }
 
     res.json({
       success: true,
-      message: 'Notification queued for retry.',
+      message: "Notification queued for retry.",
     });
   } catch (err) {
-    logger.error('Retry error: ' + err);
+    logger.error("Retry error: " + err);
     res.status(500).json({
       success: false,
-      message: 'Internal server error.',
+      message: "Internal server error.",
     });
   }
 };
@@ -123,7 +126,7 @@ const retryFailed = async (req, res) => {
 const triggerNotification = async (req, res) => {
   try {
     const { type, recipient, templateName, payload } = req.body;
-    const notificationService = require('../services/notificationService');
+    const notificationService = require("../services/notificationService");
 
     const history = await notificationService.queueNotification({
       type,
@@ -135,14 +138,14 @@ const triggerNotification = async (req, res) => {
 
     res.status(202).json({
       success: true,
-      message: 'Notification queued successfully.',
+      message: "Notification queued successfully.",
       data: { historyId: history.id },
     });
   } catch (err) {
-    logger.error('Trigger notification error: ' + err);
-    res.status(err.message.includes('Template not found') ? 404 : 500).json({
+    logger.error("Trigger notification error: " + err);
+    res.status(err.message.includes("Template not found") ? 404 : 500).json({
       success: false,
-      message: err.message || 'Internal server error.',
+      message: err.message || "Internal server error.",
     });
   }
 };
@@ -155,10 +158,10 @@ const getAnalytics = async (req, res) => {
       data: stats,
     });
   } catch (err) {
-    logger.error('Get analytics error: ' + err);
+    logger.error("Get analytics error: " + err);
     res.status(500).json({
       success: false,
-      message: 'Internal server error.',
+      message: "Internal server error.",
     });
   }
 };

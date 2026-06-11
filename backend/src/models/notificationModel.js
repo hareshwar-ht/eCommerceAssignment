@@ -1,19 +1,25 @@
-const pool = require('../config/database');
+const pool = require("../config/database");
 
-const createTemplate = async ({ name, type, templateId, subject, variables }) => {
+const createTemplate = async ({
+  name,
+  type,
+  templateId,
+  subject,
+  variables,
+}) => {
   const result = await pool.query(
     `INSERT INTO notification_templates (name, type, template_id, subject, variables)
      VALUES ($1, $2, $3, $4, $5)
      RETURNING *`,
-    [name, type, templateId, subject || null, JSON.stringify(variables || [])]
+    [name, type, templateId, subject || null, JSON.stringify(variables || [])],
   );
   return result.rows[0];
 };
 
 const findByName = async (name) => {
   const result = await pool.query(
-    'SELECT * FROM notification_templates WHERE name = $1 AND is_active = true',
-    [name]
+    "SELECT * FROM notification_templates WHERE name = $1 AND is_active = true",
+    [name],
   );
   return result.rows[0] || null;
 };
@@ -24,27 +30,39 @@ const findById = async (id) => {
      FROM notification_history nh
      LEFT JOIN notification_templates nt ON nh.template_id = nt.id
      WHERE nh.id = $1`,
-    [id]
+    [id],
   );
   return result.rows[0] || null;
 };
 
-const createHistory = async ({ userId, type, recipient, templateId, payload }) => {
+const createHistory = async ({
+  userId,
+  type,
+  recipient,
+  templateId,
+  payload,
+}) => {
   const result = await pool.query(
     `INSERT INTO notification_history (user_id, type, recipient, template_id, payload)
      VALUES ($1, $2, $3, $4, $5)
      RETURNING *`,
-    [userId, type, recipient, templateId || null, JSON.stringify(payload || {})]
+    [
+      userId,
+      type,
+      recipient,
+      templateId || null,
+      JSON.stringify(payload || {}),
+    ],
   );
   return result.rows[0];
 };
 
 const updateHistoryStatus = async (id, status, errorMessage) => {
-  const fields = ['status = $1', 'updated_at = CURRENT_TIMESTAMP'];
+  const fields = ["status = $1", "updated_at = CURRENT_TIMESTAMP"];
   const values = [status];
 
-  if (status === 'sent') {
-    fields.push('sent_at = CURRENT_TIMESTAMP');
+  if (status === "sent") {
+    fields.push("sent_at = CURRENT_TIMESTAMP");
   }
 
   if (errorMessage) {
@@ -55,8 +73,8 @@ const updateHistoryStatus = async (id, status, errorMessage) => {
   values.push(id);
 
   await pool.query(
-    `UPDATE notification_history SET ${fields.join(', ')} WHERE id = $${values.length}`,
-    values
+    `UPDATE notification_history SET ${fields.join(", ")} WHERE id = $${values.length}`,
+    values,
   );
 };
 
@@ -65,7 +83,7 @@ const incrementRetry = async (id) => {
     `UPDATE notification_history
      SET retry_count = retry_count + 1, status = 'retrying', updated_at = CURRENT_TIMESTAMP
      WHERE id = $1`,
-    [id]
+    [id],
   );
 };
 
@@ -76,7 +94,7 @@ const getFailedRetriable = async (limit = 50) => {
      AND retry_count < max_retries
      ORDER BY created_at ASC
      LIMIT $1`,
-    [limit]
+    [limit],
   );
   return result.rows;
 };
@@ -102,7 +120,9 @@ const getHistory = async ({ userId, type, status, page = 1, limit = 20 }) => {
     paramIndex++;
   }
 
-  const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+  const whereClause = conditions.length
+    ? `WHERE ${conditions.join(" AND ")}`
+    : "";
   const offset = (page - 1) * limit;
 
   const [historyResult, countResult] = await Promise.all([
@@ -113,11 +133,11 @@ const getHistory = async ({ userId, type, status, page = 1, limit = 20 }) => {
        ${whereClause}
        ORDER BY nh.created_at DESC
        LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
-      [...values, limit, offset]
+      [...values, limit, offset],
     ),
     pool.query(
       `SELECT COUNT(*) FROM notification_history nh ${whereClause}`,
-      values
+      values,
     ),
   ]);
 

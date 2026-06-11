@@ -1,17 +1,21 @@
-const twilio = require('twilio');
+const twilio = require("twilio");
 
 const client = twilio(
   process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
+  process.env.TWILIO_AUTH_TOKEN,
 );
 
 const sendSMS = async ({ to, body }) => {
   let formattedTo = to;
-  if (formattedTo && !formattedTo.startsWith('+')) {
-    let cleaned = formattedTo.replace(/[\s()-]/g, '');
+  if (formattedTo && !formattedTo.startsWith("+")) {
+    let cleaned = formattedTo.replace(/[\s()-]/g, "");
     if (cleaned.length === 10 && /^\d+$/.test(cleaned)) {
       formattedTo = `+91${cleaned}`;
-    } else if (cleaned.startsWith('91') && cleaned.length === 12 && /^\d+$/.test(cleaned)) {
+    } else if (
+      cleaned.startsWith("91") &&
+      cleaned.length === 12 &&
+      /^\d+$/.test(cleaned)
+    ) {
       formattedTo = `+${cleaned}`;
     } else {
       formattedTo = `+${cleaned}`;

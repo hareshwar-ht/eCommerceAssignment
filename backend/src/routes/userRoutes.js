@@ -1,7 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const authController = require('../controllers/authController');
-const { authMiddleware } = require('../middleware/auth');
+const authController = require("../controllers/authController");
+const { authMiddleware } = require("../middleware/auth");
 
 /**
  * @swagger
@@ -48,7 +48,7 @@ const { authMiddleware } = require('../middleware/auth');
  *       500:
  *         description: Internal server error
  */
-router.post('/register', authController.register);
+router.post("/register", authController.register);
 
 /**
  * @swagger
@@ -88,7 +88,7 @@ router.post('/register', authController.register);
  *       500:
  *         description: Internal server error
  */
-router.post('/register/initiate', authController.registerInitiate);
+router.post("/register/initiate", authController.registerInitiate);
 
 /**
  * @swagger
@@ -121,7 +121,7 @@ router.post('/register/initiate', authController.registerInitiate);
  *       500:
  *         description: Internal server error
  */
-router.post('/register/verify', authController.registerVerify);
+router.post("/register/verify", authController.registerVerify);
 
 /**
  * @swagger
@@ -154,7 +154,7 @@ router.post('/register/verify', authController.registerVerify);
  *       500:
  *         description: Internal server error
  */
-router.post('/login', authController.login);
+router.post("/login", authController.login);
 
 /**
  * @swagger
@@ -174,7 +174,7 @@ router.post('/login', authController.login);
  *       500:
  *         description: Internal server error
  */
-router.post('/refresh', authController.refresh);
+router.post("/refresh", authController.refresh);
 
 /**
  * @swagger
@@ -202,7 +202,7 @@ router.post('/refresh', authController.refresh);
  *       500:
  *         description: Internal server error
  */
-router.post('/forgot-password', authController.forgotPassword);
+router.post("/forgot-password", authController.forgotPassword);
 
 /**
  * @swagger
@@ -233,7 +233,7 @@ router.post('/forgot-password', authController.forgotPassword);
  *       500:
  *         description: Internal server error
  */
-router.post('/reset-password', authController.resetPassword);
+router.post("/reset-password", authController.resetPassword);
 
 /**
  * @swagger
@@ -247,7 +247,7 @@ router.post('/reset-password', authController.resetPassword);
  *       500:
  *         description: Internal server error
  */
-router.post('/logout', authController.logout);
+router.post("/logout", authController.logout);
 
 /**
  * @swagger
@@ -307,8 +307,8 @@ router.post('/logout', authController.logout);
  *       500:
  *         description: Internal server error
  */
-router.get('/profile', authMiddleware, authController.getProfile);
-router.put('/profile', authMiddleware, authController.updateProfile);
-router.delete('/profile', authMiddleware, authController.deleteProfile);
+router.get("/profile", authMiddleware, authController.getProfile);
+router.put("/profile", authMiddleware, authController.updateProfile);
+router.delete("/profile", authMiddleware, authController.deleteProfile);
 
 module.exports = router;
