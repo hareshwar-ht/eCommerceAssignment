@@ -20,6 +20,8 @@ concurrency:
 jobs:
   lint-test-build:
     name: Lint, Test & Build
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
 
     defaults:

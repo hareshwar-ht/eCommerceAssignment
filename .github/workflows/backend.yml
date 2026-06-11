@@ -20,6 +20,8 @@ concurrency:
 jobs:
   test:
     name: Lint & Test
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
 
     defaults:
