@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt');
-const crypto = require('crypto');
 const userModel = require('../models/userModel');
 const refreshTokenModel = require('../models/refreshTokenModel');
 const pendingRegistrationModel = require('../models/pendingRegistrationModel');
@@ -52,7 +51,7 @@ const verifyRegistration = async ({ phone, otp }) => {
     throw new Error('User with this email already exists.');
   }
 
-  let user = null;
+  let user;
   const client = await pool.connect();
   try {
     await client.query('BEGIN');

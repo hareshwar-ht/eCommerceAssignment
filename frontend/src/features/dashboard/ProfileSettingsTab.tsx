@@ -37,7 +37,7 @@ export default function ProfileSettingsTab() {
       setIsUpdating(true);
       await updateProfile(data);
       toast.success('Profile updated successfully');
-    } catch (error) {
+    } catch {
       toast.error('Failed to update profile');
     } finally {
       setIsUpdating(false);
@@ -53,7 +53,7 @@ export default function ProfileSettingsTab() {
       setIsDeleting(true);
       await deleteProfile();
       toast.success('Account deleted successfully');
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete account');
       setIsDeleting(false);
     }

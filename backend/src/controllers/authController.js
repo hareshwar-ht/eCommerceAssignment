@@ -1,3 +1,4 @@
+const userModel = require('../models/userModel');
 const refreshTokenModel = require('../models/refreshTokenModel');
 const authService = require('../services/authService');
 const { generateAccessToken, generateRefreshToken } = require('../utils/jwt');
