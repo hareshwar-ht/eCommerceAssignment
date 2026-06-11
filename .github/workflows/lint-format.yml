@@ -1,0 +1,57 @@
+name: Auto Format & Lint Fix
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+concurrency:
+  group: format-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  format:
+    name: Format and Lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Backend Formatting
+      - name: Install Backend Dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Format Backend
+        working-directory: backend
+        run: |
+          npm install --save-dev prettier
+          npm run format
+          npm run lint:fix
+
+      # Frontend Formatting
+      - name: Install Frontend Dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Format Frontend
+        working-directory: frontend
+        run: |
+          npm install --save-dev prettier
+          npm run format
+          npm run lint:fix
+
+      # Single push to avoid race conditions
+      - name: Commit fixes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: format and lint fix across repo"

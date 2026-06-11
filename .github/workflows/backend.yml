@@ -42,18 +42,5 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Install Prettier
-        run: npm install --save-dev prettier
-
-      - name: Run Format & Lint Fix
-        run: |
-          npm run format
-          npm run lint:fix
-
       - name: Run Tests
         run: npm run test
-
-      - name: Commit fixes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore: format and lint fix"
