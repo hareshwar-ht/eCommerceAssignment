@@ -1,12 +1,12 @@
-import { lazy, Suspense } from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { ProtectedRoute, GuestRoute } from './guards';
-import { PageLoader } from '@/components/ui/spinner';
+import { lazy, Suspense } from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ProtectedRoute, GuestRoute } from "./guards";
+import { PageLoader } from "@/components/ui/spinner";
 
-const HomePage = lazy(() => import('@/pages/HomePage'));
-const LoginPage = lazy(() => import('@/pages/LoginPage'));
-const RegisterPage = lazy(() => import('@/pages/RegisterPage'));
-const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
+const HomePage = lazy(() => import("@/pages/HomePage"));
+const LoginPage = lazy(() => import("@/pages/LoginPage"));
+const RegisterPage = lazy(() => import("@/pages/RegisterPage"));
+const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
 
 function withSuspense(element: React.ReactElement) {
   return <Suspense fallback={<PageLoader />}>{element}</Suspense>;
@@ -14,31 +14,31 @@ function withSuspense(element: React.ReactElement) {
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: withSuspense(<HomePage />),
   },
   {
-    path: '/login',
+    path: "/login",
     element: withSuspense(
       <GuestRoute>
         <LoginPage />
-      </GuestRoute>
+      </GuestRoute>,
     ),
   },
   {
-    path: '/register',
+    path: "/register",
     element: withSuspense(
       <GuestRoute>
         <RegisterPage />
-      </GuestRoute>
+      </GuestRoute>,
     ),
   },
   {
-    path: '/dashboard',
+    path: "/dashboard",
     element: withSuspense(
       <ProtectedRoute>
         <DashboardPage />
-      </ProtectedRoute>
+      </ProtectedRoute>,
     ),
   },
 ]);

@@ -1,15 +1,15 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import LoginForm from '@/features/auth/LoginForm';
-import { AuthContext } from '@/context/auth-context';
-import type { User } from '@/types/auth';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import LoginForm from "@/features/auth/LoginForm";
+import { AuthContext } from "@/context/auth-context";
+import type { User } from "@/types/auth";
 
 const mockNavigate = vi.fn();
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom');
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
   return { ...actual, useNavigate: () => mockNavigate };
 });
 
@@ -42,51 +42,53 @@ function renderLoginForm(authCtx = buildAuthContext()) {
           <LoginForm />
         </MemoryRouter>
       </AuthContext.Provider>
-    </QueryClientProvider>
+    </QueryClientProvider>,
   );
 }
 
-describe('LoginForm', () => {
+describe("LoginForm", () => {
   beforeEach(() => {
     mockLogin.mockReset();
     mockNavigate.mockReset();
   });
 
-  it('renders email and password fields', () => {
+  it("renders email and password fields", () => {
     renderLoginForm();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /sign in/i }),
+    ).toBeInTheDocument();
   });
 
-  it('shows validation errors when submitted empty', async () => {
+  it("shows validation errors when submitted empty", async () => {
     renderLoginForm();
-    await userEvent.click(screen.getByRole('button', { name: /sign in/i }));
+    await userEvent.click(screen.getByRole("button", { name: /sign in/i }));
     expect(await screen.findByText(/invalid email/i)).toBeInTheDocument();
   });
 
-  it('calls login with correct values on valid submit', async () => {
+  it("calls login with correct values on valid submit", async () => {
     mockLogin.mockResolvedValue(undefined);
     renderLoginForm();
 
-    await userEvent.type(screen.getByLabelText(/email/i), 'user@example.com');
-    await userEvent.type(screen.getByLabelText(/password/i), 'password123');
-    await userEvent.click(screen.getByRole('button', { name: /sign in/i }));
+    await userEvent.type(screen.getByLabelText(/email/i), "user@example.com");
+    await userEvent.type(screen.getByLabelText(/password/i), "password123");
+    await userEvent.click(screen.getByRole("button", { name: /sign in/i }));
 
     expect(mockLogin).toHaveBeenCalledWith({
-      email: 'user@example.com',
-      password: 'password123',
+      email: "user@example.com",
+      password: "password123",
     });
   });
 
-  it('navigates to /dashboard on successful login', async () => {
+  it("navigates to /dashboard on successful login", async () => {
     mockLogin.mockResolvedValue(undefined);
     renderLoginForm();
 
-    await userEvent.type(screen.getByLabelText(/email/i), 'user@example.com');
-    await userEvent.type(screen.getByLabelText(/password/i), 'password123');
-    await userEvent.click(screen.getByRole('button', { name: /sign in/i }));
+    await userEvent.type(screen.getByLabelText(/email/i), "user@example.com");
+    await userEvent.type(screen.getByLabelText(/password/i), "password123");
+    await userEvent.click(screen.getByRole("button", { name: /sign in/i }));
 
-    expect(mockNavigate).toHaveBeenCalledWith('/dashboard', { replace: true });
+    expect(mockNavigate).toHaveBeenCalledWith("/dashboard", { replace: true });
   });
 });

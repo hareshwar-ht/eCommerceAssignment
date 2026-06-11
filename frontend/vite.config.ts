@@ -37,7 +37,7 @@ export default defineConfig({
       exclude: [
         "node_modules",
         "src/test",
-        "src/components/ui",   // shadcn generated
+        "src/components/ui", // shadcn generated
         "dist",
         "*.config.*",
       ],

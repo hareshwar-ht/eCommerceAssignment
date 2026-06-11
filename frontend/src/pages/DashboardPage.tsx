@@ -1,37 +1,54 @@
-import { useState } from 'react';
-import { LogOut, LayoutDashboard, Package, Heart, Settings } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
+import { useState } from "react";
+import {
+  LogOut,
+  LayoutDashboard,
+  Package,
+  Heart,
+  Settings,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
-import { useAuth } from '@/hooks/useAuth';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
-import { Button } from '@/components/ui/button';
+import { useAuth } from "@/hooks/useAuth";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import { Button } from "@/components/ui/button";
 
-import OverviewTab from '@/features/dashboard/OverviewTab';
-import OrdersTab from '@/features/dashboard/OrdersTab';
-import WishlistTab from '@/features/dashboard/WishlistTab';
-import ProfileSettingsTab from '@/features/dashboard/ProfileSettingsTab';
+import OverviewTab from "@/features/dashboard/OverviewTab";
+import OrdersTab from "@/features/dashboard/OrdersTab";
+import WishlistTab from "@/features/dashboard/WishlistTab";
+import ProfileSettingsTab from "@/features/dashboard/ProfileSettingsTab";
 
 const SIDEBAR_NAV = [
-  { id: 'overview', label: 'Overview', icon: LayoutDashboard, component: OverviewTab },
-  { id: 'orders', label: 'Orders', icon: Package, component: OrdersTab },
-  { id: 'wishlist', label: 'Wishlist', icon: Heart, component: WishlistTab },
-  { id: 'settings', label: 'Settings', icon: Settings, component: ProfileSettingsTab },
+  {
+    id: "overview",
+    label: "Overview",
+    icon: LayoutDashboard,
+    component: OverviewTab,
+  },
+  { id: "orders", label: "Orders", icon: Package, component: OrdersTab },
+  { id: "wishlist", label: "Wishlist", icon: Heart, component: WishlistTab },
+  {
+    id: "settings",
+    label: "Settings",
+    icon: Settings,
+    component: ProfileSettingsTab,
+  },
 ];
 
 export default function DashboardPage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState("overview");
 
   const handleLogout = async () => {
     await logout();
-    toast.success('Logged out successfully');
-    navigate('/', { replace: true });
+    toast.success("Logged out successfully");
+    navigate("/", { replace: true });
   };
 
-  const ActiveComponent = SIDEBAR_NAV.find((item) => item.id === activeTab)?.component || OverviewTab;
+  const ActiveComponent =
+    SIDEBAR_NAV.find((item) => item.id === activeTab)?.component || OverviewTab;
 
   return (
     <div className="flex min-h-screen flex-col bg-muted/20">
@@ -61,8 +78,8 @@ export default function DashboardPage() {
                 {SIDEBAR_NAV.map((item) => (
                   <Button
                     key={item.id}
-                    variant={activeTab === item.id ? 'secondary' : 'ghost'}
-                    className={`justify-start ${activeTab === item.id ? 'bg-secondary font-medium' : ''}`}
+                    variant={activeTab === item.id ? "secondary" : "ghost"}
+                    className={`justify-start ${activeTab === item.id ? "bg-secondary font-medium" : ""}`}
                     onClick={() => setActiveTab(item.id)}
                   >
                     <item.icon className="mr-2 size-4" />

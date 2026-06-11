@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query';
-import { toast } from 'sonner';
-import { Loader2, ArrowLeft } from 'lucide-react';
-import { parseApiError } from '@/api/errorHandler';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useAuth } from '@/hooks/useAuth';
-import { registerSchema, type RegisterSchema } from '@/features/auth/schemas';
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Loader2, ArrowLeft } from "lucide-react";
+import { parseApiError } from "@/api/errorHandler";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/hooks/useAuth";
+import { registerSchema, type RegisterSchema } from "@/features/auth/schemas";
 
 export default function RegisterForm() {
   const { registerInitiate, registerVerify } = useAuth();
   const navigate = useNavigate();
 
-  const [step, setStep] = useState<'register' | 'otp'>('register');
-  const [phoneForVerify, setPhoneForVerify] = useState('');
-  const [otp, setOtp] = useState('');
-  const [otpError, setOtpError] = useState('');
+  const [step, setStep] = useState<"register" | "otp">("register");
+  const [phoneForVerify, setPhoneForVerify] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpError, setOtpError] = useState("");
 
   const {
     register,
@@ -29,10 +29,10 @@ export default function RegisterForm() {
   } = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      password: '',
-      phone: '',
+      name: "",
+      email: "",
+      password: "",
+      phone: "",
     },
   });
 
@@ -46,8 +46,8 @@ export default function RegisterForm() {
       }),
     onSuccess: (_, variables) => {
       setPhoneForVerify(variables.phone);
-      toast.success('Verification OTP sent to your phone.');
-      setStep('otp');
+      toast.success("Verification OTP sent to your phone.");
+      setStep("otp");
     },
     onError: (error) => {
       const parsedError = parseApiError(error);
@@ -62,8 +62,8 @@ export default function RegisterForm() {
   const verifyMutation = useMutation({
     mutationFn: (otpStr: string) => registerVerify(phoneForVerify, otpStr),
     onSuccess: () => {
-      toast.success('Account created successfully');
-      navigate('/dashboard', { replace: true });
+      toast.success("Account created successfully");
+      navigate("/dashboard", { replace: true });
     },
     onError: (error) => {
       const parsedError = parseApiError(error);
@@ -75,10 +75,10 @@ export default function RegisterForm() {
   const handleVerifyOtp = (e: React.FormEvent) => {
     e.preventDefault();
     if (!otp || otp.length < 6) {
-      setOtpError('Please enter a valid 6-digit OTP');
+      setOtpError("Please enter a valid 6-digit OTP");
       return;
     }
-    setOtpError('');
+    setOtpError("");
     verifyMutation.mutate(otp);
   };
 
@@ -87,21 +87,24 @@ export default function RegisterForm() {
     initiateMutation.mutate(values);
   };
 
-  if (step === 'otp') {
+  if (step === "otp") {
     return (
       <div className="space-y-4">
         <button
           type="button"
-          onClick={() => setStep('register')}
+          onClick={() => setStep("register")}
           className="flex items-center text-sm font-medium text-primary hover:underline mb-2"
         >
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to registration
         </button>
 
         <div className="space-y-1">
-          <h2 className="text-xl font-bold tracking-tight text-foreground">Verify your phone</h2>
+          <h2 className="text-xl font-bold tracking-tight text-foreground">
+            Verify your phone
+          </h2>
           <p className="text-sm text-muted-foreground">
-            We sent a verification code to <span className="font-semibold">{phoneForVerify}</span>
+            We sent a verification code to{" "}
+            <span className="font-semibold">{phoneForVerify}</span>
           </p>
         </div>
 
@@ -115,17 +118,21 @@ export default function RegisterForm() {
               maxLength={6}
               placeholder="123456"
               value={otp}
-              onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+              onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
               className="text-center text-2xl tracking-widest font-mono py-6"
               autoFocus
             />
-            {otpError && (
-              <p className="text-sm text-destructive">{otpError}</p>
-            )}
+            {otpError && <p className="text-sm text-destructive">{otpError}</p>}
           </div>
 
-          <Button type="submit" className="w-full" disabled={verifyMutation.isPending}>
-            {verifyMutation.isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={verifyMutation.isPending}
+          >
+            {verifyMutation.isPending && (
+              <Loader2 className="mr-2 size-4 animate-spin" />
+            )}
             Verify & Create Account
           </Button>
         </form>
@@ -153,7 +160,7 @@ export default function RegisterForm() {
           placeholder="John Doe"
           autoComplete="name"
           aria-invalid={!!errors.name}
-          {...register('name')}
+          {...register("name")}
         />
         {errors.name && (
           <p className="text-sm text-destructive">{errors.name.message}</p>
@@ -168,7 +175,7 @@ export default function RegisterForm() {
           placeholder="you@example.com"
           autoComplete="email"
           aria-invalid={!!errors.email}
-          {...register('email')}
+          {...register("email")}
         />
         {errors.email && (
           <p className="text-sm text-destructive">{errors.email.message}</p>
@@ -183,7 +190,7 @@ export default function RegisterForm() {
           placeholder="••••••••"
           autoComplete="new-password"
           aria-invalid={!!errors.password}
-          {...register('password')}
+          {...register("password")}
         />
         {errors.password && (
           <p className="text-sm text-destructive">{errors.password.message}</p>
@@ -198,15 +205,21 @@ export default function RegisterForm() {
           placeholder="+1 (555) 123-4567"
           autoComplete="tel"
           aria-invalid={!!errors.phone}
-          {...register('phone')}
+          {...register("phone")}
         />
         {errors.phone && (
           <p className="text-sm text-destructive">{errors.phone.message}</p>
         )}
       </div>
 
-      <Button type="submit" className="w-full" disabled={initiateMutation.isPending}>
-        {initiateMutation.isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
+      <Button
+        type="submit"
+        className="w-full"
+        disabled={initiateMutation.isPending}
+      >
+        {initiateMutation.isPending && (
+          <Loader2 className="mr-2 size-4 animate-spin" />
+        )}
         Create Account
       </Button>
     </form>

@@ -15,13 +15,13 @@ npm run dev       # http://localhost:5173
 
 ## Scripts
 
-| Command | Description |
-|---|---|
-| `npm run dev` | Dev server with HMR |
-| `npm run build` | Type-check + production build |
-| `npm run test` | Run all tests |
-| `npm run test:coverage` | Coverage report |
-| `npm run lint` | ESLint |
+| Command                 | Description                   |
+| ----------------------- | ----------------------------- |
+| `npm run dev`           | Dev server with HMR           |
+| `npm run build`         | Type-check + production build |
+| `npm run test`          | Run all tests                 |
+| `npm run test:coverage` | Coverage report               |
+| `npm run lint`          | ESLint                        |
 
 ## Architecture
 

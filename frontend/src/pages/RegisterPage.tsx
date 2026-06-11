@@ -1,7 +1,13 @@
-import { Link } from 'react-router-dom';
-import { ShoppingBag } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import RegisterForm from '@/features/auth/RegisterForm';
+import { Link } from "react-router-dom";
+import { ShoppingBag } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import RegisterForm from "@/features/auth/RegisterForm";
 
 export default function RegisterPage() {
   return (
@@ -22,8 +28,13 @@ export default function RegisterPage() {
           <CardContent>
             <RegisterForm />
             <div className="mt-6 text-center text-sm">
-              <span className="text-muted-foreground">Already have an account? </span>
-              <Link to="/login" className="font-medium underline underline-offset-4">
+              <span className="text-muted-foreground">
+                Already have an account?{" "}
+              </span>
+              <Link
+                to="/login"
+                className="font-medium underline underline-offset-4"
+              >
                 Sign in
               </Link>
             </div>

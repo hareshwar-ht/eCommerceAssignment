@@ -1,15 +1,22 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Menu, ShoppingBag, LogOut, LayoutDashboard, ShoppingCart, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Separator } from '@/components/ui/separator';
-import { useAuth } from '@/hooks/useAuth';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Menu,
+  ShoppingBag,
+  LogOut,
+  LayoutDashboard,
+  ShoppingCart,
+  Trash2,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/hooks/useAuth";
 
 const navLinks = [
-  { label: 'Home', href: '/' },
-  { label: 'Features', href: '/#features' },
-  { label: 'About', href: '/#about' },
+  { label: "Home", href: "/" },
+  { label: "Features", href: "/#features" },
+  { label: "About", href: "/#about" },
 ] as const;
 
 interface NavItemsProps {
@@ -79,7 +86,7 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     await logout();
-    navigate('/');
+    navigate("/");
   };
 
   const closeMenu = () => setOpen(false);
@@ -115,7 +122,10 @@ export default function Navbar() {
                 <span className="sr-only">Open Cart</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="flex w-full flex-col sm:max-w-lg">
+            <SheetContent
+              side="right"
+              className="flex w-full flex-col sm:max-w-lg"
+            >
               <div className="flex items-center justify-between pb-4 border-b">
                 <h2 className="text-lg font-semibold">Shopping Cart</h2>
               </div>
@@ -125,19 +135,25 @@ export default function Navbar() {
                   {[1, 2, 3].map((item) => (
                     <div key={item} className="flex items-center gap-4">
                       <div className="h-16 w-16 shrink-0 rounded bg-muted overflow-hidden">
-                        <img 
-                          src={`https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&q=80`} 
-                          alt="Product" 
+                        <img
+                          src={`https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&q=80`}
+                          alt="Product"
                           className="h-full w-full object-cover"
                         />
                       </div>
                       <div className="flex-1">
-                        <h4 className="font-medium text-sm line-clamp-1">Premium Wireless Headphones</h4>
+                        <h4 className="font-medium text-sm line-clamp-1">
+                          Premium Wireless Headphones
+                        </h4>
                         <p className="text-sm text-muted-foreground">Qty: 1</p>
                       </div>
                       <div className="text-right">
                         <p className="font-medium text-sm">$199.99</p>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 mt-1 text-destructive hover:bg-destructive/10 hover:text-destructive">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 mt-1 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                        >
                           <Trash2 className="size-4" />
                         </Button>
                       </div>

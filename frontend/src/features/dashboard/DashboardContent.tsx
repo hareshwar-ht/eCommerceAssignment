@@ -1,17 +1,38 @@
-import { User, Shield, Clock, LogOut, Mail, Calendar } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { useAuth } from '@/hooks/useAuth';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+import { User, Shield, Clock, LogOut, Mail, Calendar } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/hooks/useAuth";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 
 const stats = [
-  { label: 'Account Status', value: 'Active', icon: Shield, color: 'text-green-600' },
-  { label: 'Member Since', value: 'Today', icon: Calendar, color: 'text-blue-600' },
-  { label: 'Last Login', value: 'Just now', icon: Clock, color: 'text-amber-600' },
+  {
+    label: "Account Status",
+    value: "Active",
+    icon: Shield,
+    color: "text-green-600",
+  },
+  {
+    label: "Member Since",
+    value: "Today",
+    icon: Calendar,
+    color: "text-blue-600",
+  },
+  {
+    label: "Last Login",
+    value: "Just now",
+    icon: Clock,
+    color: "text-amber-600",
+  },
 ];
 
 export default function DashboardContent() {
@@ -20,8 +41,8 @@ export default function DashboardContent() {
 
   const handleLogout = async () => {
     await logout();
-    toast.success('Logged out successfully');
-    navigate('/', { replace: true });
+    toast.success("Logged out successfully");
+    navigate("/", { replace: true });
   };
 
   return (
@@ -49,7 +70,9 @@ export default function DashboardContent() {
             {stats.map((stat) => (
               <Card key={stat.label}>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">{stat.label}</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    {stat.label}
+                  </CardTitle>
                   <stat.icon className={`size-4 ${stat.color}`} />
                 </CardHeader>
                 <CardContent>
@@ -70,12 +93,16 @@ export default function DashboardContent() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-muted-foreground">Full Name</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Full Name
+                  </p>
                   <p className="text-sm">{user?.name}</p>
                 </div>
                 <Separator />
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-muted-foreground">Email</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Email
+                  </p>
                   <div className="flex items-center gap-2 text-sm">
                     <Mail className="size-4 text-muted-foreground" />
                     {user?.email}
@@ -83,8 +110,12 @@ export default function DashboardContent() {
                 </div>
                 <Separator />
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-muted-foreground">User ID</p>
-                  <p className="font-mono text-xs text-muted-foreground">{user?.id}</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    User ID
+                  </p>
+                  <p className="font-mono text-xs text-muted-foreground">
+                    {user?.id}
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -95,22 +126,34 @@ export default function DashboardContent() {
                   <Shield className="size-5" />
                   Security
                 </CardTitle>
-                <CardDescription>Manage your security preferences</CardDescription>
+                <CardDescription>
+                  Manage your security preferences
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-muted-foreground">Authentication</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Authentication
+                  </p>
                   <p className="text-sm">JWT with refresh token rotation</p>
                 </div>
                 <Separator />
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-muted-foreground">Session</p>
-                  <p className="text-sm">HTTP-only secure cookie (refresh token)</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Session
+                  </p>
+                  <p className="text-sm">
+                    HTTP-only secure cookie (refresh token)
+                  </p>
                 </div>
                 <Separator />
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-muted-foreground">Access Token</p>
-                  <p className="text-sm">Short-lived (15 min), stored in memory</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Access Token
+                  </p>
+                  <p className="text-sm">
+                    Short-lived (15 min), stored in memory
+                  </p>
                 </div>
               </CardContent>
             </Card>

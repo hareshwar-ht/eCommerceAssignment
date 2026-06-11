@@ -75,14 +75,12 @@ describe("User Routes / Auth Controller Integration", () => {
     it("should fail registration if email is already taken", async () => {
       userModel.findByEmail.mockResolvedValue({ id: "existing" });
 
-      const response = await request(app)
-        .post("/api/user/register")
-        .send({
-          name: "Bob",
-          email: "bob@example.com",
-          password: "password123",
-          phone: "9876543210",
-        });
+      const response = await request(app).post("/api/user/register").send({
+        name: "Bob",
+        email: "bob@example.com",
+        password: "password123",
+        phone: "9876543210",
+      });
 
       expect(response.status).toBe(409);
       expect(response.body.success).toBe(false);

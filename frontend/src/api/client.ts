@@ -1,12 +1,12 @@
-import axios from 'axios';
-import type { RefreshResponse } from '@/types/auth';
-import { SESSION_ACTIVE_KEY } from '@/config/constants';
+import axios from "axios";
+import type { RefreshResponse } from "@/types/auth";
+import { SESSION_ACTIVE_KEY } from "@/config/constants";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '',
+  baseURL: import.meta.env.VITE_API_URL || "",
   withCredentials: true,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -49,7 +49,7 @@ api.interceptors.response.use(
       error.response?.status === 401 &&
       originalRequest &&
       !originalRequest._retry &&
-      !originalRequest.url?.includes('/api/user/refresh')
+      !originalRequest.url?.includes("/api/user/refresh")
     ) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -69,7 +69,7 @@ api.interceptors.response.use(
         const response = await axios.post<RefreshResponse>(
           `${api.defaults.baseURL}/api/user/refresh`,
           {},
-          { withCredentials: true }
+          { withCredentials: true },
         );
 
         const newToken = response.data.data.accessToken;
@@ -82,7 +82,7 @@ api.interceptors.response.use(
         processQueue(refreshError, null);
         setAccessToken(null);
         localStorage.removeItem(SESSION_ACTIVE_KEY);
-        window.location.href = '/login';
+        window.location.href = "/login";
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
@@ -90,7 +90,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

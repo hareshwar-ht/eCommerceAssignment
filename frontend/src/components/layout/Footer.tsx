@@ -1,25 +1,25 @@
-import { Link } from 'react-router-dom';
-import { ShoppingBag, Mail, MapPin, Phone } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
+import { Link } from "react-router-dom";
+import { ShoppingBag, Mail, MapPin, Phone } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 const footerLinks = {
   shop: [
-    { label: 'All Products', href: '/' },
-    { label: 'Categories', href: '/' },
-    { label: 'Deals', href: '/' },
-    { label: 'New Arrivals', href: '/' },
+    { label: "All Products", href: "/" },
+    { label: "Categories", href: "/" },
+    { label: "Deals", href: "/" },
+    { label: "New Arrivals", href: "/" },
   ],
   company: [
-    { label: 'About Us', href: '/' },
-    { label: 'Careers', href: '/' },
-    { label: 'Blog', href: '/' },
-    { label: 'Press', href: '/' },
+    { label: "About Us", href: "/" },
+    { label: "Careers", href: "/" },
+    { label: "Blog", href: "/" },
+    { label: "Press", href: "/" },
   ],
   support: [
-    { label: 'Help Center', href: '/' },
-    { label: 'Contact Us', href: '/' },
-    { label: 'Shipping', href: '/' },
-    { label: 'Returns', href: '/' },
+    { label: "Help Center", href: "/" },
+    { label: "Contact Us", href: "/" },
+    { label: "Shipping", href: "/" },
+    { label: "Returns", href: "/" },
   ],
 };
 
@@ -34,7 +34,8 @@ export default function Footer() {
               <span>ShopHub</span>
             </Link>
             <p className="text-sm text-muted-foreground">
-              Your one-stop shop for everything you need. Quality products, fast delivery.
+              Your one-stop shop for everything you need. Quality products, fast
+              delivery.
             </p>
             <div className="space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
