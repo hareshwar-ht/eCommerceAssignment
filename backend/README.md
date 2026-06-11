@@ -1,0 +1,1 @@
+./psql -U postgres -d ecommerce_db -f /Users/htadmin/Desktop/Hari/AI_ML/AI_DEV_Foundations/ecommerce/backend/src/models/init.sql
