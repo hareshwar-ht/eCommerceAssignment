@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import LoginForm from '@/features/auth/LoginForm';
 import { AuthContext } from '@/context/auth-context';
 import type { User } from '@/types/auth';
@@ -29,13 +30,19 @@ function buildAuthContext(overrides = {}) {
   };
 }
 
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+});
+
 function renderLoginForm(authCtx = buildAuthContext()) {
   return render(
-    <AuthContext.Provider value={authCtx}>
-      <MemoryRouter>
-        <LoginForm />
-      </MemoryRouter>
-    </AuthContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <AuthContext.Provider value={authCtx}>
+        <MemoryRouter>
+          <LoginForm />
+        </MemoryRouter>
+      </AuthContext.Provider>
+    </QueryClientProvider>
   );
 }
 

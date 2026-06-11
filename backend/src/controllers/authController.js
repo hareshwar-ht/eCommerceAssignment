@@ -1,6 +1,7 @@
 const userModel = require('../models/userModel');
 const refreshTokenModel = require('../models/refreshTokenModel');
 const authService = require('../services/authService');
+const crypto = require('crypto');
 const { generateAccessToken, generateRefreshToken } = require('../utils/jwt');
 const logger = require('../utils/logger');
 

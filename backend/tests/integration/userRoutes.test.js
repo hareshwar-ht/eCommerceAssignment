@@ -10,10 +10,15 @@ jest.mock('../../src/models/userModel');
 jest.mock('../../src/models/refreshTokenModel');
 jest.mock('../../src/services/notificationService');
 jest.mock('../../src/config/database', () => {
-  return {
+  const mPool = {
     query: jest.fn(),
-    on: jest.fn()
+    on: jest.fn(),
   };
+  mPool.connect = jest.fn().mockImplementation(() => ({
+    query: mPool.query,
+    release: jest.fn()
+  }));
+  return mPool;
 });
 
 describe('User Routes / Auth Controller Integration', () => {
@@ -107,8 +112,10 @@ describe('User Routes / Auth Controller Integration', () => {
       
       pool.query
         .mockResolvedValueOnce({ rows: [pendingData] }) // Select pending
+        .mockResolvedValueOnce({}) // BEGIN
         .mockResolvedValueOnce({ rows: [{ id: 'bob-id', name: 'Bob', email: 'bob@example.com', phone: '+919876543210', role: 'user' }] }) // Insert user
-        .mockResolvedValueOnce({ rows: [] }); // Delete pending
+        .mockResolvedValueOnce({ rows: [] }) // Delete pending
+        .mockResolvedValueOnce({}); // COMMIT
 
       userModel.findByEmail.mockResolvedValue(null);
       refreshTokenModel.create.mockResolvedValue({});
